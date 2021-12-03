@@ -11,7 +11,7 @@
             {% csrf_token %}
             <fieldset class="form-group">
               <br />
-              {{ form }}
+              {{ form.as_p }}
             </fieldset>
             <div class="form-group">
               <button

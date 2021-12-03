@@ -58,6 +58,7 @@ def profile_view(request, slug):
 def my_profile(request):
     p = request.user.profile
     u = p.user
+    print(u.profile.image.url)
 
     context = {
         'user' : u
@@ -85,10 +86,12 @@ def edit_profile(request):
         form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
         if form.is_valid():
             form.save()
-            messages.success(request, f'Your account has been updated!')
+            print("account updated")
+            messages.success(request, f"Your account has been updated!")
             return redirect('my_profile')
     else: 
-        form = ProfileUpdateForm(instance = request.user)
+        form = ProfileUpdateForm(instance = request.user.profile)
+
     return render(request, 'users/edit_profile.html', {'form': form})
     ##allow users to edit their profiles...
 
