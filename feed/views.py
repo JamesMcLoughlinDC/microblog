@@ -101,7 +101,7 @@ def post_delete(request, pk):
 
 @login_required
 def like(request):
-	post_id = request.GET.get("likeId", "")
+	post_id = request.GET.get( "likeId" , "")
 	user = request.user
 	post = Post.objects.get(pk=post_id)
 	liked= False
@@ -116,3 +116,20 @@ def like(request):
     }
 	response = json.dumps(resp)
 	return HttpResponse(response, content_type = "application/json")
+
+
+class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+	model = Post
+	fields = ['description', 'pic', 'tags']
+	template_name = 'feed/create_post.html'
+
+	def form_valid(self, form):
+		form.instance.user_name = self.request.user
+		return super().form_valid(form)
+
+	def test_func(self):
+		post = self.get_object()
+		if self.request.user == post.user_name:
+			return True
+		return False
+

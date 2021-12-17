@@ -16,6 +16,42 @@
             <div class="card-body">
               <h5 class="card-title">{{ post.user_name}}</h5>
               <p class="card-text">{{ post.description}}</p>
+
+              <div class="card-footer">
+                <button class="like" id="{{ post.id }}">
+                  {% if is_liked %}
+                  <a
+                    href="{% url 'post-like' %}"
+                    style="color: red"
+                    id="likebtn{{ post.id }}"
+                  >
+                    Unlike | {{post.likes.count}}</a
+                  >
+                  {% else %}
+                  <a
+                    href="{% url 'post-like' %}"
+                    style="color: green"
+                    id="likebtn{{ post.id }}"
+                  >
+                    Like | {{post.likes.count}}</a
+                  >
+                  {% endif %}
+                </button>
+      
+                {% if post.user_name == user %}
+                <a
+                  class="btn btn-outline-info mr-3"
+                  href="{% url 'post-update' post.id %}"
+                  >Update</a
+                >
+                <a
+                  class="btn btn-outline-danger"
+                  href="{% url 'post-delete' post.id %}"
+                  >Delete</a
+                >
+                {% endif %}
+              </div>
+             
               <p class="card-text"><small class="text-muted">{{ post.date_posted}}</small></p>
             </div>
           </div>
@@ -47,3 +83,29 @@
 
     {% endif %}
 {% endblock content %}
+
+{% block jsfiles %}
+<script>
+  $(".like").click(function (e) {
+    var id = this.id;
+    var href = $(".like").find("a").attr("href");
+    e.preventDefault();
+
+    $.ajax({
+      url: href,
+      data: {
+        likeId: id,
+      },
+      success: function (response) {
+        if (response.liked) {
+          $("#likebtn" + id).html("Unlike");
+          $("#likebtn" + id).css("color", "red");
+        } else {
+          $("#likebtn" + id).html("Like");
+          $("#likebtn" + id).css("color", "green");
+        }
+      },
+    });
+  });
+</script>
+{% endblock jsfiles %}
