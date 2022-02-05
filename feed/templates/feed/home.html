@@ -1,40 +1,48 @@
 {% extends "feed/layout.html" %}
 {% load static %}
 {% block cssfiles %}
+<!-- <link rel="stylesheet" type="text/css" href= "{% static 'feed/style.css' %}"> -->
+
 {% endblock cssfiles %}
 
 {% block content %}
 <div class = "container">
 
     {% for post in posts %}
-    <div class="card mb-3" style="max-width: 540px;">
+    <div class="card mb-3 postclass" style="min-width: 540px;">
         <div class="row g-0">
           <div class="col-md-4">
-            <img src="{{ post.pic.url }}" class="img-fluid rounded-start" alt="...">
+            <img src="{{ post.pic.url }}" class = "postImage" alt="...">
           </div>
-          <div class="col-md-8">
+          <div class="col-md-8 " >
             <div class="card-body">
               <h5 class="card-title">{{ post.user_name}}</h5>
               <p class="card-text">{{ post.description}}</p>
 
               <div class="card-footer">
                 <button class="like" id="{{ post.id }}">
-                  {% if is_liked %}
+                  {% if post in liked_post %}
                   <a
                     href="{% url 'post-like' %}"
                     style="color: red"
                     id="likebtn{{ post.id }}"
                   >
-                    Unlike | {{post.likes.count}}</a
-                  >
+                    Unlike | 
+                    </a>
+                  <span id="likect{{ post.id }}" style = "color: red">
+                    {{post.likes.count}}
+                  </span>
                   {% else %}
                   <a
                     href="{% url 'post-like' %}"
                     style="color: green"
                     id="likebtn{{ post.id }}"
                   >
-                    Like | {{post.likes.count}}</a
+                    Like | </a
                   >
+                  <span id="likect{{ post.id }}" style = "color: green">
+                    {{post.likes.count}}
+                  </span>
                   {% endif %}
                 </button>
       
@@ -53,6 +61,7 @@
               </div>
              
               <p class="card-text"><small class="text-muted">{{ post.date_posted}}</small></p>
+              <p> <a href = "{% url 'post-detail' post.id %}" >Comments | {{ post.details.count }}</a></p>
             </div>
           </div>
         </div>
@@ -98,11 +107,16 @@
       },
       success: function (response) {
         if (response.liked) {
-          $("#likebtn" + id).html("Unlike");
+          $("#likebtn" + id).html("Unlike | " );
           $("#likebtn" + id).css("color", "red");
+          $("#likect" + id).css("color","red");
+          $("#likect" + id).html(response["likes"]);
+
         } else {
-          $("#likebtn" + id).html("Like");
+          $("#likebtn" + id).html("Like | ");
           $("#likebtn" + id).css("color", "green");
+          $("#likect" + id).css("color","green"); 
+          $("#likect" + id).html(response["likes"]);
         }
       },
     });

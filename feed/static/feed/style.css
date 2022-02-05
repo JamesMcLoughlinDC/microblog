@@ -1,0 +1,21 @@
+body {
+    background-color:#3ecf89;
+    
+}
+
+/* class for the div surrounding each blog/twitter type post */
+.postclass {
+    padding: 10px;
+    margin: 10px;
+
+}
+
+.postImage {
+    width:90%;
+    height:90%;
+    border-radius: 2%;
+
+}
+
+
+

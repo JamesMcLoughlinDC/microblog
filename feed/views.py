@@ -112,10 +112,13 @@ def like(request):
 		liked = True
 		Like.objects.create(user=user, post=post)
 	resp = {
-        'liked':liked
+        'liked':liked,
+		'likes':post.likes.count() 
     }
 	response = json.dumps(resp)
 	return HttpResponse(response, content_type = "application/json")
+
+
 
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
@@ -127,6 +130,10 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 		form.instance.user_name = self.request.user
 		return super().form_valid(form)
 
+	#This related to the UserPassesTestMixIn. When that function is called
+	#The test_func below is checked, so the function below gets the post, then 
+	#checks if the current users username is the sanme as username of the author of teh post
+	#if false, it returns false and the test has failed, user cannot update post...
 	def test_func(self):
 		post = self.get_object()
 		if self.request.user == post.user_name:
